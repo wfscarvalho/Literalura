@@ -3,6 +3,7 @@ package com.literalura.literalura.Service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.type.CollectionType;
+import com.literalura.literalura.Model.Author;
 
 import java.util.List;
 
@@ -16,6 +17,7 @@ public class ConvertData implements IConvertData{
             throw new RuntimeException(e);
         }
     }
+
 
     @Override
     public <T> List<T> ObtainList(String json, Class<T> classeGenerica) {

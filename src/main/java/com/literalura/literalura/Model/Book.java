@@ -1,12 +1,12 @@
 package com.literalura.literalura.Model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 @Table(name = "books")
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Book {
@@ -14,21 +14,22 @@ public class Book {
     @Id
     Long id;
     String title;
-    List<Author> authors = new ArrayList<Author>();
+    @ManyToMany(mappedBy = "books", cascade = CascadeType.ALL)
+    List<Author> authors = new ArrayList<>();
     boolean copyright;
-    int downloadCount;
-    int death_year;
+    List<String> languages= new ArrayList<>();
+    int download_count;
 
     public Book(){
 
     }
-    public Book(Long id, String title, List<Author> authors, boolean copyright, int downloadCount, int death_year) {
+    public Book(Long id, String title, List<Author> authors, boolean copyright, int download_count, int death_year) {
         this.id = id;
         this.title = title;
         this.authors = authors;
         this.copyright = copyright;
-        this.downloadCount = downloadCount;
-        this.death_year = death_year;
+        this.download_count = download_count;
+        //this.death_year = death_year;
     }
 
     public Long getId() {
@@ -53,6 +54,8 @@ public class Book {
 
     public void setAuthors(List<Author> authors) {
         this.authors = authors;
+        for (Author author: authors)
+            author.getBooks().add(this);
     }
 
     public boolean isCopyright() {
@@ -63,31 +66,41 @@ public class Book {
         this.copyright = copyright;
     }
 
-    public int getDownloadCount() {
-        return downloadCount;
+    public int getDownload_count() {
+        return download_count;
     }
 
-    public void setDownloadCount(int downloadCount) {
-        this.downloadCount = downloadCount;
+    public void setDownload_count(int download_count) {
+        this.download_count = download_count;
     }
 
-    public int getDeath_year() {
-        return death_year;
+    public List<String> getLanguages() {
+        return languages;
     }
 
-    public void setDeath_year(int death_year) {
-        this.death_year = death_year;
+    public void setLanguages(List<String> languages) {
+        this.languages = languages;
     }
 
     @Override
     public String toString() {
-        return "Book{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", authors=" + authors +
-                ", copyright=" + copyright +
-                ", downloadCount=" + downloadCount +
-                ", death_year=" + death_year +
-                '}';
+        return "id: " + id +
+                "   title: " + title +
+                "   author: " + authors;
+    }
+
+    public String detailedDescription() {
+        return String.format("""
+                
+                ______LIVRO______
+                
+                Id: %d
+                Título: %s
+                Authors: %s
+                Language: %s
+                downloadCount: %d
+                _________________
+                
+                """,getId(),getTitle(),getAuthors(),getLanguages(), getDownload_count());
     }
 }
